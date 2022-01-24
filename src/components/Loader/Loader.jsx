@@ -1,14 +1,14 @@
 
-import { TailSpin } from 'react-loader-spinner';
+import { SpinnerCircular } from 'spinners-react';
 import {LoaderContainer} from './Loader.styled';
-;
+
 
 
 
 
 
 const Loader = () => {
-    return (<LoaderContainer><TailSpin color="#00BFFF" height={80} width={80} />
+    return (<LoaderContainer><SpinnerCircular color="#00BFFF" size="50" speed="100" />
     </LoaderContainer>);
 }
  

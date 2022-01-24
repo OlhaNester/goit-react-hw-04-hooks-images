@@ -13,7 +13,7 @@ import Axios from "axios";
 import { AppContainer } from "./App.styled";
 
 import "react-toastify/dist/ReactToastify.css";
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+
 
 //API key: 20298268-ad7854859c2b2dc6e8b44e367
 
