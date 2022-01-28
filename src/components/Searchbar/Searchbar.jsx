@@ -1,5 +1,5 @@
 
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import {
   SearchbarContainer,
@@ -10,46 +10,92 @@ import {
 } from "./Searchbar.styled";
 import { ReactComponent as SearchIcon } from '../Searchbar/search.svg';
 
-export default class Searchbar extends Component {
-  state = {
-    query: "",
+
+
+export default function Searchbar({ onSubmit }) {
+
+  const [query, setQuery] = useState('');
+
+  const handleChange = (event) => {
+    const { value } = event.currentTarget;
+    setQuery(value.toLowerCase() );
   };
-
-  handleChange = (event) => {
-    this.setState({ query: event.currentTarget.value.toLowerCase() });
-      };
-
-  handleSubmit = (event) => {
+  
+   const handleSubmit = (event) => {
        event.preventDefault();
 
-    if (this.state.query.trim() === "") {
+    if (query.trim() === "") {
       toast.error("Enter query!");
       return;
     }
-    this.props.onSubmit(this.state.query);
-    this.setState({ query: "" });
+    onSubmit(query);
+    setQuery('');
   };
-  render() {
-    return (
-      <SearchbarContainer>
+
+  return(<SearchbarContainer>
         <header>
-          <SearchForm onSubmit={this.handleSubmit}>
+          <SearchForm onSubmit={handleSubmit}>
             <SearchFormButton type="submit"><SearchIcon width="20"  height="20" color="blue"
              />
               <SearchSpan>Search</SearchSpan>
             </SearchFormButton>
 
             <SearhInput
-              onChange={this.handleChange}
+              onChange={handleChange}
               type="text"
               autoComplete="off"
               autoFocus
               placeholder="Search images and photos"
-              value={this.state.query}
+              value={query}
             />
           </SearchForm>
         </header>
-      </SearchbarContainer>
-    );
-  }
+      </SearchbarContainer>)
+  ;
 }
+
+
+
+// export default class OldSearchbar extends Component {
+//   state = {
+//     query: "",
+//   };
+
+//   handleChange = (event) => {
+//     this.setState({ query: event.currentTarget.value.toLowerCase() });
+//       };
+
+//   handleSubmit = (event) => {
+//        event.preventDefault();
+
+//     if (this.state.query.trim() === "") {
+//       toast.error("Enter query!");
+//       return;
+//     }
+//     this.props.onSubmit(this.state.query);
+//     this.setState({ query: "" });
+//   };
+//   render() {
+//     return (
+//       <SearchbarContainer>
+//         <header>
+//           <SearchForm onSubmit={this.handleSubmit}>
+//             <SearchFormButton type="submit"><SearchIcon width="20"  height="20" color="blue"
+//              />
+//               <SearchSpan>Search</SearchSpan>
+//             </SearchFormButton>
+
+//             <SearhInput
+//               onChange={this.handleChange}
+//               type="text"
+//               autoComplete="off"
+//               autoFocus
+//               placeholder="Search images and photos"
+//               value={this.state.query}
+//             />
+//           </SearchForm>
+//         </header>
+//       </SearchbarContainer>
+//     );
+//   }
+// }
