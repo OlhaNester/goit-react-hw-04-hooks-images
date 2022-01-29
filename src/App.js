@@ -1,68 +1,73 @@
 import React, { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
-import {GlobalStyle} from './GlobalStyle';
+import { GlobalStyle } from "./GlobalStyle";
 
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import Searchbar from "./components/Searchbar/Searchbar";
-import Error from "./components/Error/Error";
-import Loader from "./components/Loader/Loader";
-import Modal from "./components/Modal/Modal";
-import Button from "./components/Button/Button";
+// import Error from "./components/Error/Error";
+// import Loader from "./components/Loader/Loader";
+// import Modal from "./components/Modal/Modal";
+// import Button from "./components/Button/Button";
 import Axios from "axios";
 
 import { AppContainer } from "./App.styled";
 
 import "react-toastify/dist/ReactToastify.css";
 
-
 //API key: 20298268-ad7854859c2b2dc6e8b44e367
 
-const fetchImage = ({ filter = '', page = 1, isLoading = true }) => {
-  return Axios.get(
-    `https://pixabay.com/api/?q=${filter}&page=${page}&key=20298268-ad7854859c2b2dc6e8b44e367&image_type=photo&orientation=horizontal&per_page=12`
-  )
-    .then((response) => response.data)
-};
-
 export default function App(second) {
-  
-  
   const [images, setImages] = useState([]);
-  const [error, setError] = useState(null);
-  const [filter, setFilter] = useState('');
+  // const [error, setError] = useState(null);
+  const [filter, setFilter] = useState("");
+  const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [largeImage, setLargeImage] = useState('');
+  // const [showModal, setShowModal] = useState(false);
+  // const [largeImage, setLargeImage] = useState("");
   const [totalHits, setTotalHits] = useState(0);
+
+  useEffect(() => {
+    setIsLoading(true);
+    Axios.get(
+      `https://pixabay.com/api/?q=${filter}&page=${page}&key=20298268-ad7854859c2b2dc6e8b44e367&image_type=photo&orientation=horizontal&per_page=12`
+    )
+      .then((response) => response.data)
+      .then(({ hits, totalHits }) => {
+        setImages((prevState) => [...prevState, ...hits]);
+        setPage((prevState) => prevState + 1);
+        setTotalHits(totalHits);
+      });
+  }, [filter, page]);
 
   const handleFormSubmit = (query) => {
     setFilter(query);
-    page = 1;
-    setImages([]),
-   };
+    setPage(1);
+    setImages([]);
+  };
 
-  return(<>
-         <AppContainer>
-         <GlobalStyle/>
-         <Searchbar onSubmit={handleFormSubmit} />
-           {error && <Error message='Something wrong' />}
-           { filter && totalHits===0 && <Error message='No results found' />}
-         <ImageGallery images={images} onClick={this.saveLargeImage} />
-         {showModal && (
+  return (
+    <>
+      <AppContainer>
+        <GlobalStyle />
+        <Searchbar onSubmit={handleFormSubmit} />
+        {/* {error && <Error message='Something wrong' />}
+           { filter && totalHits===0 && <Error message='No results found' />} */}
+        <ImageGallery images={images} />
+        {/* {showModal && (
            <Modal onClose={this.toggleModal} url={this.state.largeImage} />
          )}
 
          {isLoading && <Loader />}
          {images.length > 0 && images.length !== totalHits && !isLoading && (
            <Button onClick={this.fetchImage} />
-         )}
-         <ToastContainer autoClose={3000} />
-       </AppContainer>
-       </>);
+         )} */}
+        <ToastContainer autoClose={3000} />
+      </AppContainer>
+    </>
+  );
 }
 
-
-// export default class OldApp extends Component {
+// export default class App extends Component {
 //   state = {
 //     images: [],
 //     error: null,
@@ -85,7 +90,6 @@ export default function App(second) {
 //   }
 
 //   handleFormSubmit = (query) => {
-    
 //     this.setState({ filter: query, page: 1, images: [] });
 //   };
 
@@ -119,30 +123,28 @@ export default function App(second) {
 //   };
 
 //   render() {
-//     const { images, showModal, isLoading, error, totalHits, filter } = this.state;
-    
+//     const { images, showModal, isLoading, error, totalHits, filter } =
+//       this.state;
 
 //     return (
 //       <>
-//         <GlobalStyle/>
+//         <GlobalStyle />
 //         <AppContainer>
-//         <Searchbar onSubmit={this.handleFormSubmit} />
-//           {error && <Error message='Something wrong' />}
-//           { filter && totalHits===0 && <Error message='No results found' />}
-//         <ImageGallery images={images} onClick={this.saveLargeImage} />
-//         {showModal && (
-//           <Modal onClose={this.toggleModal} url={this.state.largeImage} />
-//         )}
+//           <Searchbar onSubmit={this.handleFormSubmit} />
+//           {error && <Error message="Something wrong" />}
+//           {filter && totalHits === 0 && <Error message="No results found" />}
+//           <ImageGallery images={images} onClick={this.saveLargeImage} />
+//           {showModal && (
+//             <Modal onClose={this.toggleModal} url={this.state.largeImage} />
+//           )}
 
-//         {isLoading && <Loader />}
-//         {images.length > 0 && images.length !== totalHits && !isLoading && (
-//           <Button onClick={this.fetchImage} />
-//         )}
-//         <ToastContainer autoClose={3000} />
-//       </AppContainer>
+//           {isLoading && <Loader />}
+//           {images.length > 0 && images.length !== totalHits && !isLoading && (
+//             <Button onClick={this.fetchImage} />
+//           )}
+//           <ToastContainer autoClose={3000} />
+//         </AppContainer>
 //       </>
 //     );
 //   }
 // }
-
-
