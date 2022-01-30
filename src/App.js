@@ -4,10 +4,10 @@ import { GlobalStyle } from "./GlobalStyle";
 
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import Searchbar from "./components/Searchbar/Searchbar";
-// import Error from "./components/Error/Error";
-// import Loader from "./components/Loader/Loader";
+import Error from "./components/Error/Error";
+import Loader from "./components/Loader/Loader";
 // import Modal from "./components/Modal/Modal";
-// import Button from "./components/Button/Button";
+import Button from "./components/Button/Button";
 import Axios from "axios";
 
 import { AppContainer } from "./App.styled";
@@ -18,7 +18,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function App(second) {
   const [images, setImages] = useState([]);
-  // const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
   const [filter, setFilter] = useState("");
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +26,7 @@ export default function App(second) {
   // const [largeImage, setLargeImage] = useState("");
   const [totalHits, setTotalHits] = useState(0);
 
-  useEffect(() => {
+  const fetchImage = () => {
     setIsLoading(true);
     Axios.get(
       `https://pixabay.com/api/?q=${filter}&page=${page}&key=20298268-ad7854859c2b2dc6e8b44e367&image_type=photo&orientation=horizontal&per_page=12`
@@ -36,8 +36,19 @@ export default function App(second) {
         setImages((prevState) => [...prevState, ...hits]);
         setPage((prevState) => prevState + 1);
         setTotalHits(totalHits);
-      });
-  }, [filter, page]);
+      })
+      .catch((error) => setError(error.message))
+      .finally(setIsLoading(false));
+  };
+
+  useEffect(() => {
+    if (filter === "") return;
+    fetchImage();
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [filter]);
 
   const handleFormSubmit = (query) => {
     setFilter(query);
@@ -50,17 +61,16 @@ export default function App(second) {
       <AppContainer>
         <GlobalStyle />
         <Searchbar onSubmit={handleFormSubmit} />
-        {/* {error && <Error message='Something wrong' />}
-           { filter && totalHits===0 && <Error message='No results found' />} */}
+        {error && <Error message="Something wrong" />}
+        {filter && totalHits === 0 && <Error message="No results found" />}
         <ImageGallery images={images} />
-        {/* {showModal && (
+        {/* { {showModal && (
            <Modal onClose={this.toggleModal} url={this.state.largeImage} />
-         )}
-
-         {isLoading && <Loader />}
-         {images.length > 0 && images.length !== totalHits && !isLoading && (
-           <Button onClick={this.fetchImage} />
          )} */}
+        {isLoading && <Loader />}
+        {images.length > 0 && images.length !== totalHits && !isLoading && (
+          <Button onClick={() => fetchImage()} />
+        )}
         <ToastContainer autoClose={3000} />
       </AppContainer>
     </>
