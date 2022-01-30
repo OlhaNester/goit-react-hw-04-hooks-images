@@ -6,7 +6,7 @@ import ImageGallery from "./components/ImageGallery/ImageGallery";
 import Searchbar from "./components/Searchbar/Searchbar";
 import Error from "./components/Error/Error";
 import Loader from "./components/Loader/Loader";
-// import Modal from "./components/Modal/Modal";
+import Modal from "./components/Modal/Modal";
 import Button from "./components/Button/Button";
 import Axios from "axios";
 
@@ -22,8 +22,8 @@ export default function App(second) {
   const [filter, setFilter] = useState("");
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  // const [showModal, setShowModal] = useState(false);
-  // const [largeImage, setLargeImage] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [largeImage, setLargeImage] = useState("");
   const [totalHits, setTotalHits] = useState(0);
 
   const fetchImage = () => {
@@ -42,18 +42,29 @@ export default function App(second) {
   };
 
   useEffect(() => {
-    if (filter === "") return;
+    if (!filter) return;
     fetchImage();
-    window.scrollTo({
-      top: document.documentElement.scrollHeight,
-      behavior: "smooth",
-    });
-  }, [filter]);
+    if (page !== 0) {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [filter, page]);
 
   const handleFormSubmit = (query) => {
     setFilter(query);
     setPage(1);
     setImages([]);
+  };
+
+  const toggleModal = () => {
+    setShowModal((showModal) => !showModal);
+  };
+
+  const saveLargeImage = (url) => {
+    setLargeImage(url);
+    toggleModal();
   };
 
   return (
@@ -63,10 +74,8 @@ export default function App(second) {
         <Searchbar onSubmit={handleFormSubmit} />
         {error && <Error message="Something wrong" />}
         {filter && totalHits === 0 && <Error message="No results found" />}
-        <ImageGallery images={images} />
-        {/* { {showModal && (
-           <Modal onClose={this.toggleModal} url={this.state.largeImage} />
-         )} */}
+        <ImageGallery images={images} onClick={saveLargeImage} />
+        {showModal && <Modal onClose={toggleModal} url={largeImage} />}
         {isLoading && <Loader />}
         {images.length > 0 && images.length !== totalHits && !isLoading && (
           <Button onClick={() => fetchImage()} />
