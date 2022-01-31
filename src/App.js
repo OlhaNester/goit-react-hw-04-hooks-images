@@ -26,35 +26,46 @@ export default function App(second) {
   const [largeImage, setLargeImage] = useState("");
   const [totalHits, setTotalHits] = useState(0);
 
+  async function PPP() {
+    const { data } = await Axios.get(
+      `https://pixabay.com/api/?q=${filter}&page=${page}&key=20298268-ad7854859c2b2dc6e8b44e367&image_type=photo&orientation=horizontal&per_page=9`
+    );
+    return data;
+  }
+
   const fetchImage = () => {
     setIsLoading(true);
     console.log(isLoading);
-    Axios.get(
-      `https://pixabay.com/api/?q=${filter}&page=${page}&key=20298268-ad7854859c2b2dc6e8b44e367&image_type=photo&orientation=horizontal&per_page=9`
-    )
-      .then((response) => response.data)
-      .then(({ hits, totalHits }) => {
-        
+    async function ffff() {
+      try {
+        const { hits, totalHits } = await PPP();
         setImages((prevState) => [...prevState, ...hits]);
         setPage((prevState) => prevState + 1);
         setTotalHits(totalHits);
-         window.scrollTo({
-        top: document.documentElement.scrollHeight,
-        behavior: "smooth",
-      });
-      }).catch((error) => setError(error.message)).finally(setIsLoading(false));
-        
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: "smooth",
+        });
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    ffff();
   };
 
   useEffect(() => {
-    if (!filter) {return;}
-    setIsLoading(true)
+    if (!filter) {
+      return;
+    }
     fetchImage();
-    
   }, [filter]);
 
   const handleFormSubmit = (query) => {
+    if (query === filter) return;
     setFilter(query);
+    setIsLoading(true);
     setPage(1);
     setImages([]);
   };
@@ -72,9 +83,11 @@ export default function App(second) {
     <>
       <AppContainer>
         <GlobalStyle />
-        <Searchbar onSubmit={handleFormSubmit} />
+        <Searchbar propSubmit={handleFormSubmit} />
         {error && <Error message="Something wrong" />}
-        {filter && totalHits === 0 && <Error message="No results found" />}
+        {filter && totalHits === 0 && !isLoading && (
+          <Error message="No results found" />
+        )}
         <ImageGallery images={images} onClick={saveLargeImage} />
         {showModal && <Modal onClose={toggleModal} url={largeImage} />}
         {isLoading && <Loader />}

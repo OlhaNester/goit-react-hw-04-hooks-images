@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import {
@@ -8,53 +7,49 @@ import {
   SearchSpan,
   SearhInput,
 } from "./Searchbar.styled";
-import { ReactComponent as SearchIcon } from '../Searchbar/search.svg';
+import { ReactComponent as SearchIcon } from "../Searchbar/search.svg";
 
-
-
-export default function Searchbar({ onSubmit }) {
-
-  const [query, setQuery] = useState('');
+export default function Searchbar({ propSubmit }) {
+  const [query, setQuery] = useState("");
 
   const handleChange = (event) => {
     const { value } = event.currentTarget;
-    setQuery(value.toLowerCase() );
+    setQuery(value.toLowerCase());
   };
-  
-   const handleSubmit = (event) => {
-       event.preventDefault();
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
     if (query.trim() === "") {
       toast.error("Enter query!");
       return;
     }
-    onSubmit(query);
-    setQuery('');
+    propSubmit(query);
+    setQuery("");
   };
 
-  return(<SearchbarContainer>
-        <header>
-          <SearchForm onSubmit={handleSubmit}>
-            <SearchFormButton type="submit"><SearchIcon width="20"  height="20" color="blue"
-             />
-              <SearchSpan>Search</SearchSpan>
-            </SearchFormButton>
+  return (
+    <SearchbarContainer>
+      <header>
+        <SearchForm onSubmit={handleSubmit}>
+          <SearchFormButton type="submit">
+            <SearchIcon width="20" height="20" color="blue" />
+            <SearchSpan>Search</SearchSpan>
+          </SearchFormButton>
 
-            <SearhInput
-              onChange={handleChange}
-              type="text"
-              autoComplete="off"
-              autoFocus
-              placeholder="Search images and photos"
-              value={query}
-            />
-          </SearchForm>
-        </header>
-      </SearchbarContainer>)
-  ;
+          <SearhInput
+            onChange={handleChange}
+            type="text"
+            autoComplete="off"
+            autoFocus
+            placeholder="Search images and photos"
+            value={query}
+          />
+        </SearchForm>
+      </header>
+    </SearchbarContainer>
+  );
 }
-
-
 
 // export default class OldSearchbar extends Component {
 //   state = {
