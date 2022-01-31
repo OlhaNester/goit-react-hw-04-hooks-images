@@ -28,29 +28,30 @@ export default function App(second) {
 
   const fetchImage = () => {
     setIsLoading(true);
+    console.log(isLoading);
     Axios.get(
-      `https://pixabay.com/api/?q=${filter}&page=${page}&key=20298268-ad7854859c2b2dc6e8b44e367&image_type=photo&orientation=horizontal&per_page=12`
+      `https://pixabay.com/api/?q=${filter}&page=${page}&key=20298268-ad7854859c2b2dc6e8b44e367&image_type=photo&orientation=horizontal&per_page=9`
     )
       .then((response) => response.data)
       .then(({ hits, totalHits }) => {
+        
         setImages((prevState) => [...prevState, ...hits]);
         setPage((prevState) => prevState + 1);
         setTotalHits(totalHits);
-      })
-      .catch((error) => setError(error.message))
-      .finally(setIsLoading(false));
-  };
-
-  useEffect(() => {
-    if (!filter) return;
-    fetchImage();
-    if (page !== 0) {
-      window.scrollTo({
+         window.scrollTo({
         top: document.documentElement.scrollHeight,
         behavior: "smooth",
       });
-    }
-  }, [filter, page]);
+      }).catch((error) => setError(error.message)).finally(setIsLoading(false));
+        
+  };
+
+  useEffect(() => {
+    if (!filter) {return;}
+    setIsLoading(true)
+    fetchImage();
+    
+  }, [filter]);
 
   const handleFormSubmit = (query) => {
     setFilter(query);
