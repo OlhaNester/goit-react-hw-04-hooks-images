@@ -8,13 +8,10 @@ import Error from "./components/Error/Error";
 import Loader from "./components/Loader/Loader";
 import Modal from "./components/Modal/Modal";
 import Button from "./components/Button/Button";
-import Axios from "axios";
 
 import { AppContainer } from "./App.styled";
-
+import apiImages from "./service/apiImages";
 import "react-toastify/dist/ReactToastify.css";
-
-//API key: 20298268-ad7854859c2b2dc6e8b44e367
 
 export default function App(second) {
   const [images, setImages] = useState([]);
@@ -26,19 +23,11 @@ export default function App(second) {
   const [largeImage, setLargeImage] = useState("");
   const [totalHits, setTotalHits] = useState(0);
 
-  async function PPP() {
-    const { data } = await Axios.get(
-      `https://pixabay.com/api/?q=${filter}&page=${page}&key=20298268-ad7854859c2b2dc6e8b44e367&image_type=photo&orientation=horizontal&per_page=9`
-    );
-    return data;
-  }
-
   const fetchImage = () => {
     setIsLoading(true);
-    console.log(isLoading);
-    async function ffff() {
+    async function forFetch() {
       try {
-        const { hits, totalHits } = await PPP();
+        const { hits, totalHits } = await apiImages(filter, page);
         setImages((prevState) => [...prevState, ...hits]);
         setPage((prevState) => prevState + 1);
         setTotalHits(totalHits);
@@ -52,7 +41,7 @@ export default function App(second) {
         setIsLoading(false);
       }
     }
-    ffff();
+    forFetch();
   };
 
   useEffect(() => {
