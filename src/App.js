@@ -35,8 +35,8 @@ export default function App(second) {
           top: document.documentElement.scrollHeight,
           behavior: "smooth",
         });
-      } catch (err) {
-        setError(err.message);
+      } catch (error) {
+        setError(error.message);
       } finally {
         setIsLoading(false);
       }
